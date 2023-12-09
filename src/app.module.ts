@@ -6,6 +6,8 @@ import { MenuModule } from './menu/menu.module';
 import { PermissionModule } from './permission/permission.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { RootModule } from './root/root.module';
+
 
 @Module({
   imports: [
@@ -21,11 +23,13 @@ import { MongooseModule } from '@nestjs/mongoose';
         dbName: config.get<string>('DB_NAME'),
       })
     }),
+    RootModule,
     AuthModule,
     UserModule,
     RoleModule,
     MenuModule,
-    PermissionModule],
+    PermissionModule
+  ],
   controllers: [],
   providers: [],
 })
