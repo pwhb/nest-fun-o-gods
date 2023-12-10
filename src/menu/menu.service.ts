@@ -16,7 +16,7 @@ export class MenuService
 
     find({ filter, skip, limit, sort }: IFindParams): Promise<Menu[]>
     {
-        return this.menuModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec();
+        return this.menuModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).lean().exec();
     }
 
     count(filter: FilterQuery<any>): Promise<number>

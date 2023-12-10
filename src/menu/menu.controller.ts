@@ -8,6 +8,8 @@ import { Menu } from './menu.schema';
 import { CurrentUser, Public } from 'src/lib/decorators/auth';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
+import { makeTree } from 'src/lib/utils/structures';
+import { time } from 'src/lib/utils/time';
 
 @ApiTags('Menu')
 @ApiBearerAuth()
@@ -31,7 +33,9 @@ export class MenuController
     async getMenuTree()
     {
         const data = await this.menuService.find({ filter: {}, skip: 0, limit: 500, sort: { name: 1 } });
-        return data;
+        const treeMaker = async () => makeTree(data, "subMenus");
+        const tree = await time(treeMaker);
+        return tree;
     }
 
     @ApiOperation({ summary: 'Find menu by Id' })
@@ -59,10 +63,6 @@ export class MenuController
     @ApiQuery({ name: 'sort_by', type: String, required: false })
     async find(@Req() request: Request, @CurrentUser() user)
     {
-        console.log({
-            user: request.user
-        });
-
         const { query } = request;
         const keys: Key[] = [
             {

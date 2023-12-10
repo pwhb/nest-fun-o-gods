@@ -16,7 +16,7 @@ export class RoleService
 
     find({ filter, skip, limit, sort }: IFindParams): Promise<Role[]>
     {
-        return this.roleModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec();
+        return this.roleModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).lean().exec();
     }
 
     count(filter: FilterQuery<any>): Promise<number>

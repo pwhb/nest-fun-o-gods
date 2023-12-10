@@ -52,10 +52,6 @@ export class PermissionController
     @ApiQuery({ name: 'sort_by', type: String, required: false })
     async find(@Req() request: Request, @CurrentUser() user)
     {
-        console.log({
-            user: request.user
-        });
-
         const { query } = request;
         const keys: Key[] = [
             {

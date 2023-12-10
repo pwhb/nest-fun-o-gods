@@ -3,8 +3,8 @@ export function makeTree(all: any[], keyName = "children")
     const tree: any = {};
     all.forEach((document) =>
     {
-        const docId = document._id.toString();
-        const parent = document.parent && document.parent.toString();
+        const docId = document._id;
+        const parent = document.parent && document.parent;
 
         if (!tree[docId])
         {

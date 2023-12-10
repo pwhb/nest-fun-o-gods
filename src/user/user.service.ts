@@ -42,7 +42,7 @@ export class UserService
         }).select({
             password: 0,
             history: 0
-        }).exec();
+        }).lean().exec();
     }
 
     count(filter: FilterQuery<any>): Promise<number>
