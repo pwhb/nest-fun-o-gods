@@ -7,12 +7,14 @@ import { PermissionModule } from './permission/permission.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 import { RootModule } from './root/root.module';
+import { APP_GUARD } from '@nestjs/core';
+import { RoleGuard } from './auth/guard/role.guard';
 
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      isGlobal: true,
+      isGlobal: true
     }),
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
@@ -31,6 +33,6 @@ import { RootModule } from './root/root.module';
     PermissionModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule { }

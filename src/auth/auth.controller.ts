@@ -1,7 +1,10 @@
-import { Controller, Post } from "@nestjs/common";
+import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
-
-@Controller("auth")
+import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Auth } from "./auth.schema";
+import { Public } from "src/lib/decorators/auth";
+@ApiTags('Auth')
+@Controller("api/v1/auth")
 export class AuthController
 {
 
@@ -9,16 +12,19 @@ export class AuthController
     {
     }
 
+    @ApiOperation({ summary: 'Register' })
     @Post("register")
-    register()
+    register(): { message: string; }
     {
         return this.authService.register();
     }
 
+    @ApiOperation({ summary: 'Login' })
     @Post("login")
-    login() 
+    @Public()
+    login(@Body() payload: Auth) 
     {
-        return this.authService.login()
+        return this.authService.login(payload);
     }
 
     @Post("logout")

@@ -1,36 +1,38 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { MenuService } from './menu.service';
-import { Request } from 'express';
-import { Key, KeyType, getObjectIds, getOptions } from 'src/lib/utils/query';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Menu } from './menu.schema';
-
-import { CurrentUser, Public } from 'src/lib/decorators/auth';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
+import { UserService } from './user.service';
 
-@ApiTags('Menu')
-@Controller('api/v1/menus')
+import { Public, CurrentUser } from 'src/lib/decorators/auth';
+import { KeyType, getOptions, getObjectIds, Key } from 'src/lib/utils/query';
+import { User } from './user.schema';
+import { Request } from 'express';
+
+
+
+@ApiTags('User')
+@Controller('api/v1/users')
 @UseGuards(JwtAuthGuard, RoleGuard)
-export class MenuController
+export class UserController
 {
-    constructor(private readonly menuService: MenuService) { }
+    constructor(private readonly userService: UserService) { }
 
-    @ApiOperation({ summary: 'Create menu' })
+    @ApiOperation({ summary: 'Create user' })
     @Post("/")
-    async create(@Body() menu: Menu)
+    async create(@Body() user: User)
     {
         return {
-            data: await this.menuService.create(menu)
+            data: await this.userService.create(user)
         };
     }
 
-    @ApiOperation({ summary: 'Find menu by Id' })
+    @ApiOperation({ summary: 'Find user by Id' })
     @Get("/:id")
     @ApiParam({ name: 'id', type: String })
     async findById(@Param('id') id: string)
     {
-        const data = await this.menuService.findById(id);
+        const data = await this.userService.findById(id);
         if (!data)
         {
             throw new NotFoundException();
@@ -50,16 +52,14 @@ export class MenuController
     @ApiQuery({ name: 'sort_by', type: String, required: false })
     async find(@Req() request: Request, @CurrentUser() user)
     {
-        console.log({
-            user: request.user
-        });
+
 
         const { query } = request;
         const keys: Key[] = [
             {
                 key: "q",
                 type: KeyType.Regex,
-                searchedFields: ["name"]
+                searchedFields: ["username"]
             },
             {
                 key: "active",
@@ -68,7 +68,7 @@ export class MenuController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.menuService.find({ filter, skip, limit, sort });
+        const data = await this.userService.find({ filter, skip, limit, sort });
         return {
             page,
             limit,
@@ -77,12 +77,12 @@ export class MenuController
     }
 
 
-    @ApiOperation({ summary: 'Update menu' })
+    @ApiOperation({ summary: 'Update user' })
     @Patch("/:id")
     @ApiParam({ name: 'id', type: String })
-    async findByIdAndUpdate(@Param('id') id: string, @Body() menu: Menu)
+    async findByIdAndUpdate(@Param('id') id: string, @Body() user: User)
     {
-        const data = await this.menuService.findByIdAndUpdate(id, menu);
+        const data = await this.userService.findByIdAndUpdate(id, user);
         if (!data)
         {
             throw new NotFoundException();
@@ -94,12 +94,12 @@ export class MenuController
 
 
 
-    @ApiOperation({ summary: 'Delete menu' })
+    @ApiOperation({ summary: 'Delete user' })
     @Delete("/:id")
     @ApiParam({ name: 'id', type: String })
     async findByIdAndDelete(@Param('id') id: string)
     {
-        const data = await this.menuService.findByIdAndDelete(id);
+        const data = await this.userService.findByIdAndDelete(id);
         if (!data)
         {
             throw new NotFoundException();
@@ -116,7 +116,7 @@ export class MenuController
     {
         const ids = getObjectIds(query);
         return {
-            data: await this.menuService.deleteMany(ids)
+            data: await this.userService.deleteMany(ids)
         };
     }
 

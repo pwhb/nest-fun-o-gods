@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Menu } from './menu.schema';
-import { Document, Model, ModifyResult } from 'mongoose';
+import { Document, Model, ModifyResult, Types } from 'mongoose';
 import { IFindParams } from 'src/lib/types/query';
-import { DeleteResult, ObjectId } from 'mongodb';
-
 
 @Injectable()
 export class MenuService
@@ -49,12 +47,12 @@ export class MenuService
         }, { new: true }).exec();
     }
 
-    async findByIdAndDelete(id: string): Promise<ModifyResult<Document<unknown, {}, Menu> & Menu & { _id: ObjectId; }>>
+    async findByIdAndDelete(id: string): Promise<ModifyResult<Document<unknown, {}, Menu> & Menu & { _id: Types.ObjectId; }>>
     {
         return this.menuModel.findByIdAndDelete(id).exec();
     }
 
-    async deleteMany(ids: ObjectId[]): Promise<DeleteResult>
+    async deleteMany(ids: Types.ObjectId[]): Promise<{}>
     {
         return this.menuModel.deleteMany({ _id: { $in: ids } }).exec();
     }

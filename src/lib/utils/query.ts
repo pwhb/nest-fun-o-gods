@@ -1,6 +1,7 @@
-import { ObjectId, Sort } from "mongodb";
-import { FilterQuery } from "mongoose";
+
+import { FilterQuery, Types } from "mongoose";
 import { ParsedQs } from "qs";
+import { DEFAULT_LIMIT } from "../consts/value";
 
 
 export enum KeyType
@@ -25,7 +26,19 @@ export interface Key
 export function getObjectIds(query: { ids: string; })
 {
     const ids = query.ids.split(",");
-    return ids.map(id => new ObjectId(id.trim()));
+    return ids.map(id => new Types.ObjectId(id.trim()));
+}
+
+export function getOptions(query: ParsedQs, keys: Key[] = [])
+{
+    const page = query.page ? parseInt(query.page as string) : 0;
+    const limit = query.limit ? parseInt(query.limit as string) : DEFAULT_LIMIT;
+    const skip = page * limit;
+
+    const filter = getFilter(keys, query);
+    const sort = getSort(query.sort_by as string);
+
+    return { page, limit, skip, filter, sort };
 }
 
 
@@ -53,7 +66,7 @@ export function getFilter(keys: Key[], query: ParsedQs)
                     break;
                 }
                 case KeyType.ObjectId: {
-                    filter[key.field ? key.field : key.key] = new ObjectId(query[key.key] as string);
+                    filter[key.field ? key.field : key.key] = new Types.ObjectId(query[key.key] as string);
                     break;
                 }
                 case KeyType.DateAfter: {
@@ -100,7 +113,7 @@ export function getFilter(keys: Key[], query: ParsedQs)
 
 export function getSort(sort_by?: any)
 {
-    const sort: Sort = {};
+    const sort: any = {};
     if (sort_by)
     {
         const split = sort_by.split(",");

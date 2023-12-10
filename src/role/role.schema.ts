@@ -1,24 +1,32 @@
-
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId } from 'mongodb';
-import { HydratedDocument } from 'mongoose';
+import { ApiProperty } from '@nestjs/swagger';
+import mongoose, { HydratedDocument } from 'mongoose';
+import { Menu } from 'src/menu/menu.schema';
+import { Permission } from 'src/permission/permission.schema';
 
 export type RoleDocument = HydratedDocument<Role>;
 
 @Schema()
 export class Role
 {
-    @Prop()
+    _id: mongoose.Types.ObjectId;
+
+    @ApiProperty()
+    @Prop({ required: true })
     name: string;
 
+    @ApiProperty()
     @Prop()
     description: string;
 
-    @Prop()
-    permissions: string[];
+    @ApiProperty()
+    @Prop({ ref: Menu.name, type: [mongoose.Schema.Types.ObjectId] })
+    menus: Menu[];
 
-    @Prop()
-    menus: string[];
+    @ApiProperty()
+    @Prop({ ref: Permission.name, type: [mongoose.Schema.Types.ObjectId] })
+    permissions: Permission[];
+
 }
 
 export const RoleSchema = SchemaFactory.createForClass(Role);

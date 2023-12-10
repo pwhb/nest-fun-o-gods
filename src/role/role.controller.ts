@@ -1,36 +1,37 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { MenuService } from './menu.service';
-import { Request } from 'express';
-import { Key, KeyType, getObjectIds, getOptions } from 'src/lib/utils/query';
 import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
-import { Menu } from './menu.schema';
-
-import { CurrentUser, Public } from 'src/lib/decorators/auth';
+import { Request } from 'express';
+import { Public, CurrentUser } from 'src/lib/decorators/auth';
+import { KeyType, getOptions, getObjectIds, Key } from 'src/lib/utils/query';
+import { RoleService } from './role.service';
+import { Role } from './role.schema';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
 
-@ApiTags('Menu')
-@Controller('api/v1/menus')
-@UseGuards(JwtAuthGuard, RoleGuard)
-export class MenuController
-{
-    constructor(private readonly menuService: MenuService) { }
 
-    @ApiOperation({ summary: 'Create menu' })
+@ApiTags('Role')
+@Controller('api/v1/roles')
+@UseGuards(JwtAuthGuard, RoleGuard)
+export class RoleController
+{
+
+    constructor(private readonly roleService: RoleService) { }
+
+    @ApiOperation({ summary: 'Create role' })
     @Post("/")
-    async create(@Body() menu: Menu)
+    async create(@Body() role: Role)
     {
         return {
-            data: await this.menuService.create(menu)
+            data: await this.roleService.create(role)
         };
     }
 
-    @ApiOperation({ summary: 'Find menu by Id' })
+    @ApiOperation({ summary: 'Find role by Id' })
     @Get("/:id")
     @ApiParam({ name: 'id', type: String })
     async findById(@Param('id') id: string)
     {
-        const data = await this.menuService.findById(id);
+        const data = await this.roleService.findById(id);
         if (!data)
         {
             throw new NotFoundException();
@@ -40,7 +41,7 @@ export class MenuController
         };
     }
 
-    @ApiOperation({ summary: 'Find menus' })
+    @ApiOperation({ summary: 'Find roles' })
     @Public()
     @Get("/")
     @ApiQuery({ name: 'q', type: String, required: false })
@@ -68,7 +69,7 @@ export class MenuController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.menuService.find({ filter, skip, limit, sort });
+        const data = await this.roleService.find({ filter, skip, limit, sort });
         return {
             page,
             limit,
@@ -77,12 +78,12 @@ export class MenuController
     }
 
 
-    @ApiOperation({ summary: 'Update menu' })
+    @ApiOperation({ summary: 'Update role' })
     @Patch("/:id")
     @ApiParam({ name: 'id', type: String })
-    async findByIdAndUpdate(@Param('id') id: string, @Body() menu: Menu)
+    async findByIdAndUpdate(@Param('id') id: string, @Body() role: Role)
     {
-        const data = await this.menuService.findByIdAndUpdate(id, menu);
+        const data = await this.roleService.findByIdAndUpdate(id, role);
         if (!data)
         {
             throw new NotFoundException();
@@ -94,12 +95,12 @@ export class MenuController
 
 
 
-    @ApiOperation({ summary: 'Delete menu' })
+    @ApiOperation({ summary: 'Delete role' })
     @Delete("/:id")
     @ApiParam({ name: 'id', type: String })
     async findByIdAndDelete(@Param('id') id: string)
     {
-        const data = await this.menuService.findByIdAndDelete(id);
+        const data = await this.roleService.findByIdAndDelete(id);
         if (!data)
         {
             throw new NotFoundException();
@@ -109,16 +110,14 @@ export class MenuController
         };
     }
 
-    @ApiOperation({ summary: 'Delete menus' })
+    @ApiOperation({ summary: 'Delete roles' })
     @Delete("/")
     @ApiQuery({ name: 'ids', type: String })
     async deleteMany(@Query() query: { ids: string; })
     {
         const ids = getObjectIds(query);
         return {
-            data: await this.menuService.deleteMany(ids)
+            data: await this.roleService.deleteMany(ids)
         };
     }
-
-
 }

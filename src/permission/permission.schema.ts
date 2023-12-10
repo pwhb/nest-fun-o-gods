@@ -1,18 +1,14 @@
 
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ObjectId } from 'mongodb';
-import { HydratedDocument } from 'mongoose';
+import mongoose, { HydratedDocument } from 'mongoose';
 
 export type PermissionDocument = HydratedDocument<Permission>;
 
 @Schema()
 export class Permission
 {
-    // name: z.string(),
-    // description: z.string(),
-    // menu: z.string(),
-    // action: z.string(),
-    // active: z.coerce.boolean(),
+    _id: mongoose.Types.ObjectId;
+
     @Prop()
     name: string;
 

@@ -15,6 +15,8 @@ async function bootstrap()
     .build();
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('api', app, document);
+
+  // app.useGlobalGuards(new JwtAuthGuard(new Reflector()));
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
