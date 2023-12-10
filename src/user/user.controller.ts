@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
 import { UserService } from './user.service';
@@ -12,6 +12,7 @@ import { Request } from 'express';
 
 
 @ApiTags('User')
+@ApiBearerAuth()
 @Controller('api/v1/users')
 @UseGuards(JwtAuthGuard, RoleGuard)
 export class UserController

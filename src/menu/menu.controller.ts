@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Q
 import { MenuService } from './menu.service';
 import { Request } from 'express';
 import { Key, KeyType, getObjectIds, getOptions } from 'src/lib/utils/query';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Menu } from './menu.schema';
 
 import { CurrentUser, Public } from 'src/lib/decorators/auth';
@@ -10,6 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
 
 @ApiTags('Menu')
+@ApiBearerAuth()
 @Controller('api/v1/menus')
 @UseGuards(JwtAuthGuard, RoleGuard)
 export class MenuController

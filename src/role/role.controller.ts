@@ -1,5 +1,5 @@
 import { Body, Controller, Delete, Get, NotFoundException, Param, Patch, Post, Query, Req, UseGuards } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiParam, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { Public, CurrentUser } from 'src/lib/decorators/auth';
 import { KeyType, getOptions, getObjectIds, Key } from 'src/lib/utils/query';
@@ -10,6 +10,7 @@ import { RoleGuard } from 'src/auth/guard/role.guard';
 
 
 @ApiTags('Role')
+@ApiBearerAuth()
 @Controller('api/v1/roles')
 @UseGuards(JwtAuthGuard, RoleGuard)
 export class RoleController
