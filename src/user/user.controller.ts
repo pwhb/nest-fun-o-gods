@@ -69,11 +69,12 @@ export class UserController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.userService.find({ filter, skip, limit, sort });
+
         return {
             page,
             limit,
-            data
+            count: await this.userService.count(filter),
+            data: await this.userService.find({ filter, skip, limit, sort })
         };
     }
 

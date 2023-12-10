@@ -70,11 +70,11 @@ export class RoleController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.roleService.find({ filter, skip, limit, sort });
         return {
             page,
             limit,
-            data
+            count: await this.roleService.count(filter),
+            data: await this.roleService.find({ filter, skip, limit, sort })
         };
     }
 

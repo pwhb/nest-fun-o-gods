@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Menu } from './menu.schema';
-import { Document, Model, ModifyResult, Types } from 'mongoose';
+import { Document, FilterQuery, Model, ModifyResult, Types } from 'mongoose';
 import { IFindParams } from 'src/lib/types/query';
 
 @Injectable()
@@ -14,15 +14,14 @@ export class MenuService
         return this.menuModel.findById(id).exec();
     }
 
-    async find({ filter, skip, limit, sort }: IFindParams): Promise<{
-        count: number;
-        data: Menu[];
-    }>
+    find({ filter, skip, limit, sort }: IFindParams): Promise<Menu[]>
     {
-        return {
-            count: await this.menuModel.countDocuments(filter),
-            data: await this.menuModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec(),
-        };
+        return this.menuModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec();
+    }
+
+    count(filter: FilterQuery<any>): Promise<number>
+    {
+        return this.menuModel.countDocuments(filter);
     }
 
     async create(menu: Menu): Promise<Menu>

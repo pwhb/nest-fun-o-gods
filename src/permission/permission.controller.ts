@@ -70,11 +70,12 @@ export class PermissionController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.permissionService.find({ filter, skip, limit, sort });
+
         return {
             page,
             limit,
-            data
+            count: await this.permissionService.count(filter),
+            data: await this.permissionService.find({ filter, skip, limit, sort })
         };
     }
 

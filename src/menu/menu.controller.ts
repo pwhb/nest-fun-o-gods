@@ -26,6 +26,14 @@ export class MenuController
         };
     }
 
+    @ApiOperation({ summary: 'Get Menu Tree' })
+    @Get("/asTree")
+    async getMenuTree()
+    {
+        const data = await this.menuService.find({ filter: {}, skip: 0, limit: 500, sort: { name: 1 } });
+        return data;
+    }
+
     @ApiOperation({ summary: 'Find menu by Id' })
     @Get("/:id")
     @ApiParam({ name: 'id', type: String })
@@ -69,11 +77,11 @@ export class MenuController
         ];
 
         const { page, limit, skip, filter, sort } = getOptions(query, keys);
-        const data = await this.menuService.find({ filter, skip, limit, sort });
         return {
             page,
             limit,
-            data
+            count: await this.menuService.count(filter),
+            data: await this.menuService.find({ filter, skip, limit, sort })
         };
     }
 

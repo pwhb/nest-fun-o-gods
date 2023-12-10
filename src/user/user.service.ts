@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, ModifyResult, Types } from 'mongoose';
+import { Document, FilterQuery, Model, ModifyResult, Types } from 'mongoose';
 import { User } from './user.schema';
 import { IFindParams } from 'src/lib/types/query';
 
@@ -32,22 +32,22 @@ export class UserService
     }
 
 
-    async find({ filter, skip, limit, sort }: IFindParams): Promise<{
-        count: number;
-        data: User[];
-    }>
+
+    find({ filter, skip, limit, sort }: IFindParams): Promise<User[]>
     {
-        return {
-            count: await this.userModel.countDocuments(filter),
-            data: await this.userModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).populate({
-                path: "role", select: {
-                    name: 1,
-                }
-            }).select({
-                password: 0,
-                history: 0
-            }).exec(),
-        };
+        return this.userModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).populate({
+            path: "role", select: {
+                name: 1,
+            }
+        }).select({
+            password: 0,
+            history: 0
+        }).exec();
+    }
+
+    count(filter: FilterQuery<any>): Promise<number>
+    {
+        return this.userModel.countDocuments(filter);
     }
 
     async create(user: User): Promise<User>

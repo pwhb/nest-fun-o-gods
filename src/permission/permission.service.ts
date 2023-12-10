@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Document, Model, ModifyResult, Types } from 'mongoose';
+import { Document, FilterQuery, Model, ModifyResult, Types } from 'mongoose';
 import { Permission } from './permission.schema';
 import { IFindParams } from 'src/lib/types/query';
 
@@ -21,15 +21,14 @@ export class PermissionService
         return this.permissionModel.findOne({ name }).select({ _id: 1 }).exec();
     }
 
-    async find({ filter, skip, limit, sort }: IFindParams): Promise<{
-        count: number;
-        data: Permission[];
-    }>
+    find({ filter, skip, limit, sort }: IFindParams): Promise<Permission[]>
     {
-        return {
-            count: await this.permissionModel.countDocuments(filter),
-            data: await this.permissionModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec(),
-        };
+        return this.permissionModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec();
+    }
+
+    count(filter: FilterQuery<any>): Promise<number>
+    {
+        return this.permissionModel.countDocuments(filter);
     }
 
     async create(role: Permission): Promise<Permission>

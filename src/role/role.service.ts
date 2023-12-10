@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Role } from './role.schema';
-import { Document, Model, ModifyResult, Types } from 'mongoose';
+import { Document, FilterQuery, Model, ModifyResult, Types } from 'mongoose';
 import { IFindParams } from 'src/lib/types/query';
 
 @Injectable()
@@ -14,16 +14,16 @@ export class RoleService
         return this.roleModel.findById(id).exec();
     }
 
-    async find({ filter, skip, limit, sort }: IFindParams): Promise<{
-        count: number;
-        data: Role[];
-    }>
+    find({ filter, skip, limit, sort }: IFindParams): Promise<Role[]>
     {
-        return {
-            count: await this.roleModel.countDocuments(filter),
-            data: await this.roleModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec(),
-        };
+        return this.roleModel.find(filter, {}, { skip: skip, limit: limit, sort: sort }).exec();
     }
+
+    count(filter: FilterQuery<any>): Promise<number>
+    {
+        return this.roleModel.countDocuments(filter);
+    }
+
 
     async create(role: Role): Promise<Role>
     {
