@@ -10,6 +10,7 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RoleGuard } from 'src/auth/guard/role.guard';
 import { makeTree } from 'src/lib/utils/structures';
 import { time } from 'src/lib/utils/time';
+import { isValidObjectId } from 'mongoose';
 
 @ApiTags('Menu')
 @ApiBearerAuth()
@@ -29,10 +30,11 @@ export class MenuController
     }
 
     @ApiOperation({ summary: 'Get Menu Tree' })
+    @Public()
     @Get("/asTree")
     async getMenuTree()
     {
-        const data = await this.menuService.find({ filter: {}, skip: 0, limit: 500, sort: { name: 1 } });
+        const data = await this.menuService.find({ filter: { active: true }, skip: 0, limit: 500, sort: { name: 1 } });
         const treeMaker = async () => makeTree(data, "subMenus");
         const tree = await time(treeMaker);
         return tree;
@@ -124,6 +126,7 @@ export class MenuController
     async deleteMany(@Query() query: { ids: string; })
     {
         const ids = getObjectIds(query);
+
         return {
             data: await this.menuService.deleteMany(ids)
         };

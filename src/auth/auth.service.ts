@@ -21,17 +21,17 @@ export class AuthService
 
         if (!user)
         {
-            throw new ForbiddenException("User not found");
+            throw new ForbiddenException("User not found.");
         }
 
         if (!user.active)
         {
-            throw new ForbiddenException("User not active");
+            throw new ForbiddenException("User is not active.");
         }
 
         if (!await compare(payload.password, user.password))
         {
-            throw new ForbiddenException("Password not match");
+            throw new ForbiddenException("Password is incorrect.");
         }
 
         return {

@@ -21,9 +21,9 @@ export class AuthController
 
     @ApiOperation({ summary: 'Login' })
     @Post("login")
-    @Public()
     login(@Body() payload: Auth) 
     {
+        
         return this.authService.login(payload);
     }
 

@@ -52,7 +52,7 @@ export class MenuService
     }
 
     async deleteMany(ids: Types.ObjectId[]): Promise<{}>
-    {
+    {   
         return this.menuModel.deleteMany({ _id: { $in: ids } }).exec();
     }
 }

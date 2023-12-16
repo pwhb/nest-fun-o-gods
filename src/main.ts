@@ -1,11 +1,13 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { CustomExceptionFilter } from './lib/exceptions/custom-exception.filter';
 
 async function bootstrap()
 {
   const app = await NestFactory.create(AppModule);
 
+  app.useGlobalFilters(new CustomExceptionFilter());
   const options = new DocumentBuilder()
     .setTitle('fun-o-gods')
     .setDescription('fun-o-gods API description')

@@ -8,7 +8,9 @@ export type AuthDocument = mongoose.HydratedDocument<Auth>;
 export class Auth
 {
     @ApiProperty()
+    
     @Prop({ required: true })
+
     username: string;
 
     @ApiProperty()

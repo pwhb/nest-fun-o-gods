@@ -29,10 +29,15 @@ export class RoleGuard implements CanActivate
         const { user, originalUrl, method } = request;
         const name = getPermissionName(originalUrl, method);
 
+        if (!user || !name)
+        {
+            return false;
+        }
 
-        const permission = await time(async () => await this.permissionService.findByName(name));
+        const permission = await this.permissionService.findByName(name);
 
-        const isAllowed = (user as User).role.permissions.includes(permission._id as any);
+        const isAllowed = (user as User).role.permissions?.includes(permission._id as any);
+
 
         return isAllowed;
     }
